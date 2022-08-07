@@ -1,3 +1,6 @@
 [submodule "VirtualJoypadServer/ViGEmClient"]
 	path = VirtualJoypadServer/ViGEmClient
 	url = https://github.com/ViGEm/ViGEmClient.git
+[submodule "VirtualJoypadServer/tcp_server"]
+	path = VirtualJoypadServer/tcp_server
+	url = https://github.com/Knight-of-night/tcp_server.git
