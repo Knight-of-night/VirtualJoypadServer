@@ -24,6 +24,8 @@ const int MAX_CONNECTIONS = 4;
 PVIGEM_CLIENT client;
 vector<PVIGEM_TARGET> pads(MAX_CONNECTIONS, nullptr);
 bool lock = false;
+void client_callback(int id, char* data, int length);
+TcpServer server("30001", client_callback);
 
 
 // Define the callback function
@@ -44,6 +46,25 @@ VOID CALLBACK notification(
     cout << (int)LargeMotor << " ";
     cout.width(3);
     cout << (int)SmallMotor << endl;
+
+    // 这里遍历了pads，有没有更好的方法？
+    for (int i = 0; i < MAX_CONNECTIONS; i++)
+    {
+        // 找到目标
+        if (pads[i] != Target)
+        {
+            continue;
+        }
+        // 构造json
+        json j;
+        j["id"] = "xbox";// TODO: ps4
+        j["LargeMotor"] = LargeMotor;
+        j["SmallMotor"] = SmallMotor;
+        // 发送
+        string data_to_send = j.dump();
+        server.send_data(i, data_to_send.c_str(), data_to_send.length());
+    }
+
 }
 
 
@@ -161,7 +182,7 @@ int main()
     }
 
     // 启动TCP
-	TcpServer server("30001", client_callback);
+	//TcpServer server("30001", client_callback);// 为了在callback函数里使用，改成全局变量
     server.start_async();
 
     cout << "Enter [q] to quit." << endl;
