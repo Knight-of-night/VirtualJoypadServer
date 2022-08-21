@@ -63,6 +63,7 @@ VOID CALLBACK notification(
         // ·¢ËÍ
         string data_to_send = j.dump();
         server.send_data(i, data_to_send.c_str(), data_to_send.length());
+        server.send_data(i, "\n", 2);
     }
 
 }
