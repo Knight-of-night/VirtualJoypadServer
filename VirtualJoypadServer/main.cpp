@@ -25,7 +25,7 @@ PVIGEM_CLIENT client;
 vector<PVIGEM_TARGET> pads(MAX_CONNECTIONS, nullptr);
 bool lock = false;
 void client_callback(int id, char* data, int length);
-TcpServer server("30001", client_callback);
+TcpServer server("30001", client_callback, 4096);
 
 
 // Define the callback function
@@ -126,19 +126,26 @@ void client_callback(int id, char* data, int length)
 		return;
 	}
 
-    // 粗略判断是否为json字符串
-    if ((length < 1) || (data[0] != '{'))
+    // 粗略判断是否为json字符串，发现如果发送速度快的时候会混在一起，不能用{}来判断
+    // 所以这里的处理方法不太好，忽略了截断的消息
+    if ((length < 1) || (data[0] != '{')/* || (data[length - 1] != '}')*/)
     {
         cout << "ERROR DATA: " << data << endl;
+        return;
     }
+    string str(data);
+    size_t begin = str.find('{');
+    size_t end = str.find('}', begin + 1);
+    string json_str = str.substr(begin, end - begin + 1);
+    //cout << json_str << endl;
 
     // 处理手柄事件
-    auto j = json::parse(data);
+    auto j = json::parse(json_str);
     // 判断是否有标识
     string data_id = j["id"];
     if (!(string("xbox") == data_id))// TODO: ps4
     {
-        cout << "ERROR!!!UNKNOW TYPE: " << data << endl;
+        cout << "ERROR!!!UNKNOW TYPE: " << json_str << endl;
         return;
     }
     // 构造XUSB_REPORT
