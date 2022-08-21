@@ -105,13 +105,19 @@ void client_callback(int id, char* data, int length)
 		return;
 	}
 
+    // 粗略判断是否为json字符串
+    if ((length < 1) || (data[0] != '{'))
+    {
+        cout << "ERROR DATA: " << data << endl;
+    }
+
     // 处理手柄事件
     auto j = json::parse(data);
     // 判断是否有标识
     string data_id = j["id"];
     if (!(string("xbox") == data_id))// TODO: ps4
     {
-        cout << "ERROR!!!UNKNOW DATA!!!" << endl;
+        cout << "ERROR!!!UNKNOW TYPE: " << data << endl;
         return;
     }
     // 构造XUSB_REPORT
