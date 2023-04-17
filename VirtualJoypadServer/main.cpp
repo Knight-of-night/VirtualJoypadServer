@@ -40,12 +40,12 @@ VOID CALLBACK notification(
 {
     static int count = 1;
 
-    cout.width(3);
-    cout << count++ << " ";
-    cout.width(3);
-    cout << (int)LargeMotor << " ";
-    cout.width(3);
-    cout << (int)SmallMotor << endl;
+    //cout.width(3);
+    //cout << count++ << " ";
+    //cout.width(3);
+    //cout << (int)LargeMotor << " ";
+    //cout.width(3);
+    //cout << (int)SmallMotor << endl;
 
     // 这里遍历了pads，有没有更好的方法？
     for (int i = 0; i < MAX_CONNECTIONS; i++)
